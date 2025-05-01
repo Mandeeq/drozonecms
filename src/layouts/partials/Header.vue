@@ -69,7 +69,7 @@ const logout = async () => {
 const headerStyle = computed(() =>{
   return store.settings.darkModeActive
   ?store.settings.darkMode
-  : "bg-light"
+  : "bg-body-light"
 }) 
 
 
@@ -142,13 +142,12 @@ const headerStyle = computed(() =>{
                   </div>
                 </div>
               <!-- User Dropdown -->
-              <div id="dropdown" class=" dropdown d-inline-block  nav-main nav-main-horizontal nav-main-hover nav-main-item ">
+             <div id="dropdown" class=" dropdown d-inline-block  nav-main nav-main-horizontal nav-main-hover nav-main-item ">
                 
                 <button type="button" class="  btn  d-flex align-items-center nav-main-item border-0 bg-transparent shadow-none"
                   id="page-header-user-dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                   <a class=" hieght nav-main-link ">
                     <i class="fas fa-user-circle nav-main-link-icon" style="font-size: 21px;"></i>
-
                   <span class="d-none d-sm-inline-block ms-2 nav-main-link-name text-dark">John</span>
                  
                   </a>
@@ -156,7 +155,7 @@ const headerStyle = computed(() =>{
                 <div class="dropdown-menu dropdown-menu-md dropdown-menu-end p-0 border-0"
                   aria-labelledby="page-header-user-dropdown">
                   <div class="p-3 text-center  border-bottom rounded-top">
-                    <img class="img-avatar img-avatar48 img-avatar-thumb " src="/assets/media/avatars/avatar10.jpg"
+                    <img class="img-avatar img-avatar48 img-avatar-thumb" src="/assets/media/avatars/avatar10.jpg"
                       alt="Header Avatar" />
                     <p class="mt-2 mb-0 fw-medium">John Smith</p>
                     <p class="mb-0 text-muted fs-sm fw-medium">Web Developer</p>

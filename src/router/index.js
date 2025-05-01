@@ -13,32 +13,26 @@ import error500 from "@/views/errors/500View.vue";
 import error503 from "@/views/errors/503View.vue";
 import layoutSimple from "@/layouts/variations/Simple.vue";
 import layoutsBackend from "@/layouts/variations/Backend.vue";
+import BannersView from "@/views/backend/BannersView.vue";
 
-import auth from "@/layouts/variations/auth.vue";
+
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem("token");
   if (token) {
     next(); // Redirect explicitly to "/"
   } else {
-    next({ name: "dashboard3" }); // Allow access if token exists
+    next({ name: 'auth-signin3' }); // Allow access if token exists
   }
 };
+
 
 // Set all routes
 
 const routes = [
-  {
-    path: "/",
-    component: auth,
-    children: [
-      {
-        path: "",
-        name: "dashboard3",
-        component: SignIn3View,
-      },
-    ],
-  },
+  
+
+
 
   //dashboard routes
   {
@@ -52,10 +46,19 @@ const routes = [
         beforeEnter: requireAuth, // this is the guard
       },
       // tables (helpers) routes
+      {
+        path: "banner",
+        name: "banners",
+        component: BannersView,
+        beforeEnter: requireAuth, // this is the guard
+      },
+    
     ],
   },
 
   //auth routes
+
+
 
   //  errors routes
   {
@@ -111,17 +114,18 @@ router.beforeEach((to, from, next) => {
   const token = localStorage.getItem("token");
 
   // FIX: Ensure logout works correctly by checking token AFTER removal
-  if (!token && from.name === "dashboard" && to.name === "dashboard3") {
+  if (!token && from.name === "dashboard" && to.name === "auth-signin3") {
     next(); // Allow logout redirection to sign-in
   }
   // If user is logged in and tries to access the sign-in page, redirect to dashboard
-  else if (token && to.name === "dashboard3") {
+  else if (token && to.name === "auth-signin3") {
     next({ name: "dashboard", replace: true });
   }
   // If user is not logged in and tries to access a dashboard route, redirect to sign-in
   else if (!token && to.path.startsWith("/dashboard")) {
-    next({ name: "dashboard3", replace: true });
-  } else {
+    next({ name: "auth-signin3", replace: true });
+  }
+  else {
     next(); // Proceed as normal
   }
 });
@@ -129,6 +133,8 @@ router.beforeEach((to, from, next) => {
 // NProgress
 /*eslint-disable no-unused-vars*/
 NProgress.configure({ showSpinner: false });
+
+
 
 router.beforeResolve((to, from, next) => {
   if (to.name) {

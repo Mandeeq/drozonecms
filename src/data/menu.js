@@ -11,6 +11,12 @@ export default {
       to: "dashboard",
       icon: "si si-speedometer",
     },
+
+    {
+      name: "Banners",
+      to: "banners",
+      icon: "si si-layers",
+    },
    
 
   
