@@ -1,0 +1,30 @@
+//
+// Display
+// --------------------------------------------------
+
+.h-header {
+  height: $header-height !important;
+}
+
+// Dark mode display classes
+html.dark {
+  .d-dark-none {
+    display: none !important;
+  }
+
+  .d-dark-inline-block {
+    display: inline-block !important;
+  }
+
+  .d-dark-block {
+    display: block !important;
+  }
+
+  .d-dark-flex {
+    display: flex !important;
+  }
+
+  .d-dark-inline-flex {
+    display: inline-flex !important;
+  }
+}

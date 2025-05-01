@@ -1,0 +1,21 @@
+//
+// NProgress - https://github.com/rstacruz/nprogress
+// --------------------------------------------------
+
+@import "nprogress/nprogress.css";
+
+// Style overrides
+#nprogress .bar,
+#nprogress .spinner {
+  z-index: 2000 !important;
+}
+
+#nprogress .bar {
+  background-color: $primary-light !important;
+}
+
+#nprogress .peg {
+  box-shadow:
+    0 0 10px $primary-light,
+    0 0 5px $primary-light !important;
+}
