@@ -9,8 +9,10 @@ import router from "./router";
 // Template components
 import BaseBlock from "@/components/BaseBlock.vue";
 import BaseBackground from "@/components/BaseBackground.vue";
-import BasePageHeading from "@/components/BasePageHeading.vue";
+import BaseModal from "@/components/modal.vue";
+import Basebutton from "@/components/Modalbutton.vue";
 import Universalsidebar from "./components/Universalsidebar.vue";
+// import BasePageHeading from "@/components/BasePageHeading.vue";
 
 // Template directives
 import clickRipple from "@/directives/clickRipple";
@@ -25,8 +27,10 @@ const app = createApp(App);
 // Register global components
 app.component("BaseBlock", BaseBlock);
 app.component("BaseBackground", BaseBackground);
-app.component("BasePageHeading", BasePageHeading);
+app.component("BaseModal", BaseModal);
+app.component("Basebutton", Basebutton);
 app.component("Universalsidebar", Universalsidebar);
+// app.component("BasePageHeading", BasePageHeading);
 
 // Register global directives
 app.directive("click-ripple", clickRipple);

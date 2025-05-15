@@ -14,8 +14,9 @@ import error503 from "@/views/errors/503View.vue";
 import layoutSimple from "@/layouts/variations/Simple.vue";
 import layoutsBackend from "@/layouts/variations/Backend.vue";
 import BannersView from "@/views/backend/BannersView.vue";
-
-
+import Services from "@/views/backend/Services.vue";
+import Portfolios from "@/views/backend/portfolio.vue";
+import auth from "@/layouts/variations/auth.vue";
 
 const requireAuth = (to, from, next) => {
   const token = localStorage.getItem("token");
@@ -30,7 +31,18 @@ const requireAuth = (to, from, next) => {
 // Set all routes
 
 const routes = [
-  
+  {
+
+    path: "/",
+    component: auth,
+    children: [
+      {
+        path: "",
+        name: "auth-signin3",
+        component: SignIn3View,
+      },
+    ],
+  },
 
 
 
@@ -52,7 +64,20 @@ const routes = [
         component: BannersView,
         beforeEnter: requireAuth, // this is the guard
       },
-    
+
+      {
+        path: "service",
+        name: "services",
+        component: Services,
+        beforeEnter: requireAuth, // this is the guard
+      },
+      {
+        path: "portfolio",
+        name: "portfolios",
+        component: Portfolios,
+        beforeEnter: requireAuth, // this is the guard
+      },
+     
     ],
   },
 

@@ -16,20 +16,20 @@ import {
 
 // Get example data
 
-const banners = ref([]); //store banner data
+const books = ref([]); //store banner data
 const showModal = ref(false); //set visibility of the modal
 const errors = ref({}); // show errors if any
 
 // storing new banner details
 const newBanners = ref({
-  id: "",
+
   title: "",
   description: "",
   file: "",
 });
 const createBanners = async () => {
   const formData = new FormData();
-  formData.append("id", newBanners.value.id);
+  
   formData.append("title", newBanners.value.title);
   formData.append("description", newBanners.value.description);
   if (newBanners.value.file) {
@@ -38,7 +38,7 @@ const createBanners = async () => {
 
   // Sends a post request to the API  useing POST
   try {
-    const response = await axios.post("/v1/library/banners", formData, {
+    const response = await axios.post("/v1/library/resources", formData, {
       header: {
         "Content-Type": "multipart/form-data",
       },
@@ -48,7 +48,7 @@ const createBanners = async () => {
     showModal.value = false; //close the modal
     newBanners.value = {
       //resets the form
-      id: "",
+     
       title: "",
       description: "",
       file: "",
@@ -59,13 +59,10 @@ const createBanners = async () => {
     errors.value = error.response?.data?.errorPayload?.errors || {};
   }
 };
+
 // cols array  to define the columns in the table
 const cols = reactive([
-  {
-    name: "ID",
-    field: "id",
-    sort: "",
-  },
+  
   {
     name: "Title",
     field: "title",
@@ -81,6 +78,12 @@ const cols = reactive([
     field: "image_url",
     sort: "",
   },
+  {
+    name: "Action",
+    field: "action",
+    sort: "",
+  },
+
 ]);
 
 //input changes and updates newBanners.value.file
@@ -114,25 +117,14 @@ function onSort(event, i) {
     });
   }
 }
-const closeModal = () => {
-  // Add logic to clear modal or reset any variables, but ensure no reference to 'action'
-  showModal.value = false;  // Assuming you're using `showModal` to control visibility
-  clearModal(); // Call the function to reset the modal
-};
-
-const openModal = () => {
-  showModal.value = true;  // Show the modal
-  clearModal(); // Call the function to reset the modal
-};
-
 
 // this will fetch the banners from backend API
 
 const getBanners = async () => {
   try {
-    const response = await axios.get("/v1/library/banners");
+    const response = await axios.get("/v1/library/resources");
     console.log("API Response", response.data);
-    banners.value = response.data.dataPayload.data; // update the banners.value with response data
+    books.value = response.data.dataPayload.data; // update the banners.value with response data
   } catch (error) {
     console.log(error);
   }
@@ -141,12 +133,100 @@ const getBanners = async () => {
 // resets the modal when its closed
 const clearModal = () => {
   newBanners.value = {
-    id: "",
+  
     title: "",
     description: "",
     file: "",
+    action
   };
   errors.value = {};
+};
+
+//when component is mounted it'll fetch the list of banners
+onMounted(() => {
+
+  getBanners();
+});
+
+
+const deleteBook = async (bookId) => {
+  if (!confirm("Are you sure you want to delete this book?")) return;
+
+  try {
+    await axios.delete(`/v1/library/resources/${bookId}`);
+
+    //call getBanners to refresh the list
+    getBanners();
+
+  } catch (error) {
+    console.error("Error deleting book:", error);
+  }
+};
+
+const editBook = async (bookId, updatedData) => {
+  if (!confirm("Are you sure you want to update this book?")) return;
+
+  try {
+    const response = await axios.put(`/v1/library/resources/${bookId}`, updatedData);
+
+    // Update the local book list with the new details
+    books.value = books.value.map((book) =>
+      book.id === bookId ? { ...book, ...response.data } : book
+    );
+
+    alert("Book updated successfully!");
+  } catch (error) {
+    console.error("Error updating book:", error);
+    alert("Failed to update book. Please try again.");
+  }
+};
+
+
+const showEditModal = ref(false); // Controls the edit modal visibility
+const editBookData = ref({
+  
+  image: "",
+ 
+  title: "",
+  description: "",
+});
+// Open the edit form with selected book details
+const openEditForm = (book) => {
+  editBookData.value = { ...book }; // Copy book data into editBookData
+  showEditModal.value = true; // Show the edit modal
+};
+const openModal=() => {
+  showModal.value = true; //open the modal
+  clearModal(); //clear the modal
+};
+
+const closeModal=()=> {
+  showModal.value = false; //close the modal
+  clearModal(); //clear the modal
+};
+
+// Save the updated book details
+const saveEditedBook = async () => {
+  if (!confirm("Are you sure you want to update this book?")) return;
+
+  try {
+    const response = await axios.put(
+      `/v1/library/resources/${editBookData.value.id}`,
+      editBookData.value
+    );
+    getBanners();
+
+    // Update the book list
+    books.value = books.value.map((book) =>
+      book.id === editBookData.value.id ? { ...book, ...response.data } : book
+    );
+
+    alert("Book updated successfully!");
+    showEditModal.value = false; // Close modal
+  } catch (error) {
+    console.error("Error updating book:", error);
+    alert("Failed to update book.");
+  }
 };
 const getImageUrl=(imagePath)=>{
 if(!imagePath){
@@ -156,28 +236,20 @@ if(!imagePath){
   }  
     return `http://localhost:8088/${imagePath}`;
 }
-
-//when component is mounted it'll fetch the list of banners
-onMounted(() => {
-  getBanners();
-
-});
 </script>
-
-
 
 <template>
 <BaseModal
 
 v-if="showModal"
-title="Add Banner"
+title="Add Portfolios"
 @close="closeModal"
-size="modal-sm"
+ size="modal-lg"
 
 >
 
         <div class="block-content fs-sm">
-          <input v-model="newBanners.id" placeholder="Id" class="form-control mb-2" />
+          
           <input v-model="newBanners.title" placeholder="Title" class="form-control mb-2" />
           <div v-if="errors.title" class="text-danger">
             {{ errors.title }}
@@ -193,29 +265,29 @@ size="modal-sm"
         <div class="block-content block-content-full text-end bg-body">
           
           <button @click="createBanners" class="btn btn-sm btn-primary">
-            Add banner
+            Add portfolios
           </button>
         </div>
 </BaseModal>
   <!-- </template> -->
   <!-- </BasePageHeading> -->
   <!-- END Hero -->
-   
 
   <!-- Page Content -->
   <!-- Page Content -->
   <div class="content">
     <BaseBlock content-full>
       <!-- Row containing title and "Add Banner" button -->
-      <Basebutton
-        title="Add Banner"
+   <Basebutton
+        title="Add Portfolio"
         @open="openModal"
         size="modal-sm"
         variant="primary"
       />
+
       <!-- Table for displaying banners -->
-      <Dataset v-slot="{ ds }" :ds-data="banners" :ds-sortby="sortBy"
-        :ds-search-in="['id', 'title', 'description', 'image_url']">
+      <Dataset v-slot="{ ds }" :ds-data="books" :ds-sortby="sortBy"
+        :ds-search-in="[ 'title', 'description', 'image_url']">
         <!-- Row containing page count and search bar -->
         <div class="d-flex justify-content-between align-items-center mb-2">
           <DatasetShow class="fs-sm me-3" />
@@ -238,12 +310,52 @@ size="modal-sm"
                 <DatasetItem tag="tbody" class="fs-sm">
                   <template #default="{ row, rowIndex }">
                     <tr>
-                      <td style="min-width: 150px">{{ row.id }}</td>
+                      
                       <td>{{ row.title }}</td>
                       <td style="min-width: 150px">{{ row.description }}</td>
                       <td>
                         <img :src="getImageUrl(row.image_url)" style="width: 40px; height: auto" />
                       </td>
+
+                      <td class="">{{ row.action }}
+                        <div v-if="showEditModal" class="modal-backdrop">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                              <h5 class="modal-title">Edit Book</h5>
+                              <button type="button" class="close" @click="showEditModal = false">
+                                <span> &times; </span>
+                              </button>
+                            </div>
+
+                            <div class="modal-body">
+                              
+                              <input v-model="editBookData.title" placeholder="Title" class="form-control mb-2" />
+                              <input v-model="editBookData.description" placeholder="Description"
+                                class="form-control mb-2" />
+                              <input placeholder="Image" class="form-control mb-2" type="file"
+                                @change="onFileChange($event)" accept="images/*" capture />
+
+                              <div class="modal-footer">
+                                <button @click="saveEditedBook" class="bg-primary text-white px-4 py-2 rounded">
+                                  Save Changes
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <div class="btn-group">
+                          <!--edit button-->
+                          <div class="modal-footer justify-content-center">
+                            <button @click="openEditForm(row)" class="btn btn-sm btn-alt-secondary">
+                              <i class="fa fa-fw fa-pencil-alt"></i>
+                            </button>
+                          </div>
+                          <button type="button" class="btn btn-sm btn-alt-secondary" @click="deleteBook(row.id)">
+                            <i :class="['fas', row.is_deleted === 1 ? 'fa-undo' : 'fa-trash']"></i>
+                          </button>
+                        </div>
+                      </td>
+
                     </tr>
                   </template>
                 </DatasetItem>

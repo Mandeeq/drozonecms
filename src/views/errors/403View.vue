@@ -39,7 +39,7 @@
         <!-- Error Footer -->
         <p class="mb-1">Would you like to let us know about it?</p>
         <a class="link-fx" href="javascript:void(0)">Report it</a> or
-        <RouterLink :to="{ name: 'backend-pages-errors' }" class="link-fx"
+        <RouterLink :to="{ name: 'dashboard' }" class="link-fx"
           >Go Back to Dashboard</RouterLink
         >
         <!-- END Error Footer -->

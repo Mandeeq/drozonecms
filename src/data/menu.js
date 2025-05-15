@@ -18,6 +18,19 @@ export default {
       icon: "si si-layers",
     },
    
+    {
+      name: "Services",
+      to: "services",
+      icon: "fa fa-screwdriver-wrench",
+    },
+
+      {
+        name: "Portfolios",
+      to: "portfolios",
+        icon: "far fa-user" // this is the guard
+          },
+         
+
 
   
   ],
